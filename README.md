@@ -1,4 +1,4 @@
-# ged4all
+# loss_database
 Database schema and prototype code for Challenge Fund loss database
 
 Please note that the contents of this repository should be considered 

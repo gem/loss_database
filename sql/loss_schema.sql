@@ -32,7 +32,7 @@ SET search_path = loss, pg_catalog, public;
 CREATE SCHEMA IF NOT EXISTS loss;
 ALTER SCHEMA loss OWNER TO losscontrib;                                     
 COMMENT ON SCHEMA loss IS                                                  
-    'Schema for Challenge Fund loss database elements';                  
+	'Schema for Challenge Fund loss database elements';                  
 
 -- NOTE If you want to use a tablespace, configure it here                           
 -- SET default_tablespace = loss_ts;                                          
@@ -41,9 +41,9 @@ COMMENT ON SCHEMA loss IS
 -- Enumerated type for loss metrics
 --
 CREATE TYPE loss.metric_enum AS ENUM (
-    'AAL',			-- Average Annual Loss
-    'AALR',			-- AAL Ratio
-    'PML'			-- Probable Maximal Loss aka 'Return Period Loss',
+	'AAL',			-- Average Annual Loss
+	'AALR',			-- AAL Ratio
+	'PML'			-- Probable Maximal Loss aka 'Return Period Loss',
 );                                                                              
 COMMENT ON TYPE loss.metric_enum IS 'Types of loss metric';
 
@@ -51,8 +51,8 @@ COMMENT ON TYPE loss.metric_enum IS 'Types of loss metric';
 -- Enumerated type for loss type
 --
 CREATE TYPE loss.loss_type_enum AS ENUM (
-    'Ground Up',	-- Ground Up losses considering 
-    'Insured' 		-- Insured losses considering insurance policy criteria 
+	'Ground Up',	-- Ground Up losses considering 
+	'Insured'		-- Insured losses considering insurance policy criteria 
 					-- such as deductibles
 );                                                                              
 COMMENT ON TYPE loss.loss_type_enum IS 'Types of loss';
@@ -61,9 +61,9 @@ COMMENT ON TYPE loss.loss_type_enum IS 'Types of loss';
 -- Enumerated type for loss frequency
 --
 CREATE TYPE loss.frequency_enum AS ENUM (
-    'Rate of Exceedence',			-- for a given investigation time 
-    'Probability of Exceedence'		-- for a given investigation time
-    'Return Period'					-- in years
+	'Rate of Exceedence',			-- for a given investigation time 
+	'Probability of Exceedence'		-- for a given investigation time
+	'Return Period'					-- in years
 );                                                                              
 COMMENT ON TYPE loss.frequency_enum IS 'Types of loss frequency';
 
@@ -73,9 +73,9 @@ COMMENT ON TYPE loss.frequency_enum IS 'Types of loss frequency';
 CREATE TYPE loss.component_enum AS ENUM (
 	-- TODO check should Buildings be Structures or similar to handle 
 	-- non-building assets such as roads, bridges or crops?
-    'Buildings',
-    'Contents',
-    'Business Interruption'	
+	'Buildings',
+	'Contents',
+	'Business Interruption'	
 );                                                                              
 COMMENT ON TYPE loss.component_enum IS 'Types of loss component';
 
@@ -83,13 +83,13 @@ COMMENT ON TYPE loss.component_enum IS 'Types of loss component';
 -- Enumerated type for occupancy (or use)
 --
 CREATE TYPE loss.occupancy_enum AS ENUM (
-    'Residential',
-    'Commercial',
-    'Industrial',
-    'Healthcare',
-    'Educational',
-    'Government',
-    'Mixed'
+	'Residential',
+	'Commercial',
+	'Industrial',
+	'Healthcare',
+	'Educational',
+	'Government',
+	'Mixed'
 );                                                                              
 COMMENT ON TYPE loss.occupancy_enum IS 'Types of Occupancy or building use';
 
@@ -141,7 +141,7 @@ CREATE INDEX ON loss_map(loss_model_id);
 -- With geospatial location and optional asset reference/id
 --
 CREATE TABLE IF NOT EXISTS loss_map_values (                                           
-    id                  BIGSERIAL PRIMARY KEY,
+	id                  BIGSERIAL PRIMARY KEY,
 	loss_map_id			INTEGER NOT NULL REFERENCES loss_map(id) 
 							ON DELETE CASCADE,
 	asset_ref			VARCHAR,	
@@ -171,7 +171,7 @@ CREATE TABLE IF NOT EXISTS loss_curve_map (
 
 	-- TODO check, should this be DOUBLE PRECISION?  
 	return_period		INTEGER NOT NULL,
-	
+
 	-- e.g. USD, persons, buildings...
 	units				VARCHAR NOT NULL
 );
@@ -209,16 +209,16 @@ CREATE INDEX ON loss_curve_map_values USING GIST(the_geom);
 -- Contribution metadata
 --
 CREATE TABLE contribution (
-    id 					SERIAL PRIMARY KEY,
-    loss_model_id 		INTEGER NOT NULL 
+	id					SERIAL PRIMARY KEY,
+	loss_model_id		INTEGER NOT NULL 
 							REFERENCES loss_model(id) ON DELETE CASCADE,
-    model_source 		VARCHAR NOT NULL,
-    model_date 			DATE NOT NULL,
-    notes 				TEXT,
-    license_id 			INTEGER NOT NULL
+	model_source		VARCHAR NOT NULL,
+	model_date			DATE NOT NULL,
+	notes				TEXT,
+	license_id			INTEGER NOT NULL
 							REFERENCES cf_common.license(id),
-    version 			VARCHAR,
-    purpose 			TEXT
+	version				VARCHAR,
+	purpose				TEXT
 );
 COMMENT ON TABLE loss.contribution                                                  
     IS 'Meta-data for contributed model, license, source etc.';                                

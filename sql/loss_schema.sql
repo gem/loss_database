@@ -61,7 +61,7 @@ COMMENT ON TYPE loss.loss_type_enum IS 'Types of loss';
 -- Enumerated type for loss frequency
 --
 CREATE TYPE loss.frequency_enum AS ENUM (
-    'Rate of Exceedence', 			-- for a given investigation time 
+    'Rate of Exceedence',			-- for a given investigation time 
     'Probability of Exceedence'		-- for a given investigation time
     'Return Period'					-- in years
 );                                                                              

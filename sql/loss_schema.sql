@@ -41,9 +41,9 @@ COMMENT ON SCHEMA loss IS
 -- Enumerated type for loss metrics
 --
 CREATE TYPE loss.metric_enum AS ENUM (
-    'AAL',	-- Average Annual Loss
-    'AALR', -- AAL Ratio
-    'PML'	-- Probable Maximal Loss aka 'Return Period Loss',
+    'AAL',			-- Average Annual Loss
+    'AALR',			-- AAL Ratio
+    'PML'			-- Probable Maximal Loss aka 'Return Period Loss',
 );                                                                              
 COMMENT ON TYPE loss.metric_enum IS 'Types of loss metric';
 
@@ -103,8 +103,7 @@ CREATE TABLE IF NOT EXISTS loss_model (
 	description			TEXT
 );
 COMMENT ON TABLE loss.loss_model 
-	IS 'Loss model meta-data and optional links to hazard, exposure and 
-vulnerability models';                                               
+	IS 'Loss model meta-data and optional links to hazard, exposure and vulnerability models';                                               
 
 -----------------------------------------------------------------------------
 

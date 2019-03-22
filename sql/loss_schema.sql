@@ -62,7 +62,7 @@ COMMENT ON TYPE loss.loss_type_enum IS 'Types of loss';
 --
 CREATE TYPE loss.frequency_enum AS ENUM (
 	'Rate of Exceedence',			-- for a given investigation time 
-	'Probability of Exceedence'		-- for a given investigation time
+	'Probability of Exceedence',	-- for a given investigation time
 	'Return Period'					-- in years
 );                                                                              
 COMMENT ON TYPE loss.frequency_enum IS 'Types of loss frequency';
@@ -82,16 +82,7 @@ COMMENT ON TYPE loss.component_enum IS 'Types of loss component';
 --
 -- Enumerated type for occupancy (or use)
 --
-CREATE TYPE loss.occupancy_enum AS ENUM (
-	'Residential',
-	'Commercial',
-	'Industrial',
-	'Healthcare',
-	'Educational',
-	'Government',
-	'Mixed'
-);                                                                              
-COMMENT ON TYPE loss.occupancy_enum IS 'Types of Occupancy or building use';
+DROP TYPE IF EXISTS loss.occupancy_enum;
 
 --
 -- Loss model
@@ -101,6 +92,8 @@ CREATE TABLE IF NOT EXISTS loss_model (
 	creation_date		DATE NOT NULL,                                      
 	name				VARCHAR NOT NULL,
 	description			TEXT
+	-- TODO add hazard and process type (probably better here than in maps)
+	-- TODO add optional links to other CF DBs
 );
 COMMENT ON TABLE loss.loss_model 
 	IS 'Loss model meta-data and optional links to hazard, exposure and vulnerability models';                                               
@@ -114,7 +107,7 @@ CREATE TABLE IF NOT EXISTS loss_map (
 	id					SERIAL PRIMARY KEY,
 	loss_model_id		INTEGER NOT NULL
 							REFERENCES loss_model(id) ON DELETE CASCADE,
-	occupancy			occupancy_enum NOT NULL,
+	occupancy			cf_common.occupancy_enum NOT NULL,
 	component			component_enum NOT NULL,
 	loss_type			loss_type_enum NOT NULL,
 
@@ -164,13 +157,25 @@ CREATE TABLE IF NOT EXISTS loss_curve_map (
 	id					SERIAL PRIMARY KEY,
 	loss_model_id		INTEGER NOT NULL REFERENCES loss_model(id) 
 							ON DELETE CASCADE,
-	occupancy			occupancy_enum NOT NULL,
+	occupancy			cf_common.occupancy_enum NOT NULL,
 	component			component_enum NOT NULL,
 	loss_type			loss_type_enum NOT NULL,
 	frequency			frequency_enum NOT NULL,
 
 	-- TODO check, should this be DOUBLE PRECISION?  
-	return_period		INTEGER NOT NULL,
+	return_period		INTEGER,
+	investigation_time	INTEGER,
+
+	CONSTRAINT either_return_period_or_inv_time CHECK (
+		-- If frequency=Return Period, return_period must not be null and 
+		-- investigation_time must be null
+		-- If frequency is not Return Period, then return_period must be null
+		-- and investigation_time must not be null
+		(frequency = 'Return Period'::frequency_enum AND 
+			investigation_time IS NULL AND return_period IS NOT NULL) OR
+		(frequency <> 'Return Period'::frequency_enum AND 
+			investigation_time IS NOT NULL AND return_period IS NULL) 
+	),
 
 	-- e.g. USD, persons, buildings...
 	units				VARCHAR NOT NULL

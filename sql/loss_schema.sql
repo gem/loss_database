@@ -89,7 +89,6 @@ DROP TYPE IF EXISTS loss.occupancy_enum;
 --
 CREATE TABLE IF NOT EXISTS loss_model (
 	id					SERIAL PRIMARY KEY,
-	creation_date		DATE NOT NULL,                                      
 	name				VARCHAR NOT NULL,
 	description			TEXT
 	-- TODO add hazard and process type (probably better here than in maps)

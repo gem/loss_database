@@ -157,20 +157,96 @@ def _import_loss_maps(cursor, loss_model_id, loss_maps):
         _import_loss_map_values(cursor, lmid, lm.values)
 
 
+_LOSS_CURVE_MAP_QUERY = """
+INSERT INTO loss.loss_curve_map (
+    loss_model_id, occupancy, component, loss_type,
+    frequency, return_period, investigation_time, units)
+VALUES (
+    %s, %s, %s, %s,
+    %s, %s, %s, %s
+)
+RETURNING id
+"""
+
+
+def _import_loss_curve_map(cursor, loss_model_id, loss_curve_map):
+    cursor.execute(_LOSS_CURVE_MAP_QUERY, [
+        loss_model_id,
+        loss_curve_map.occupancy,
+        loss_curve_map.component,
+        loss_curve_map.loss_type,
+        loss_curve_map.frequency,
+        loss_curve_map.return_period,
+        loss_curve_map.investigation_time,
+        loss_curve_map.units
+    ])
+    return cursor.fetchone()[0]
+
+
+_LOSS_CURVE_MAP_VALUES_QUERY_TEMPLATE = """
+INSERT INTO loss.loss_curve_map_values (
+    loss_curve_map_id, asset_ref, the_geom, losses, rates)
+    (SELECT %s AS loss_curve_map_id, %s)
+"""
+
+
+def _import_loss_curve_map_values_via_query(cursor, lmcmid, query):
+    bulk_query = _LOSS_CURVE_MAP_VALUES_QUERY_TEMPLATE % (
+        lmcmid, query)
+    verbose_message("Bulk loss curve map query = {0}".format(bulk_query))
+    cursor.execute(bulk_query)
+
+
+_LOSS_CURVE_MAP_VALUES_QUERY = """
+INSERT INTO loss.loss_map_values (
+    loss_map_id, asset_ref, the_geom, losses, rates)
+VALUES (
+    %s, %s, %s, %s, %s
+)
+"""
+
+
+def _import_loss_curve_map_values(cursor, loss_map_id, lcm_values):
+    for lcmv in lcm_values:
+        cursor.execute(_LOSS_CURVE_MAP_VALUES_QUERY, [
+            loss_map_id,
+            lcmv.asset_ref,
+            lcmv.the_geom,
+            lcmv.losses,
+            lcmv.rates
+        ])
+
+
+def _import_loss_curve_maps(cursor, loss_model_id, loss_curve_maps):
+    for lcm in loss_curve_maps:
+        lcmid = _import_loss_curve_map(cursor, loss_model_id, lcm)
+        d = lcm.directives
+        if d is not None:
+            q = d.get('_cf_loss_curve_map_value_data_query')
+            if q is not None:
+                _import_loss_curve_map_values_via_query(cursor, lcmid, q)
+                return
+        _import_loss_curve_map_values(cursor, lcmid, lcm.values)
+
+
 def import_loss_model(loss_model):
     """
     Import loss_model into the loss DB, return id
     """
     verbose_message("Model contains {0} maps\n" .format(
         len(loss_model.loss_maps)))
+    verbose_message("Model contains {0} curve maps\n" .format(
+        len(loss_model.loss_curve_maps)))
 
     with connections['loss_contrib'].cursor() as cursor:
         License.load_licenses(cursor)
         # TODO investigate commit/rollback
         model_id = _import_loss_model(cursor, loss_model)
         _import_contribution(
-            cursor, model_id, loss_model.contribution_md)
+            cursor, model_id, loss_model.contribution)
         _import_loss_maps(cursor, model_id, loss_model.loss_maps)
+        _import_loss_curve_maps(
+            cursor, model_id, loss_model.loss_curve_maps)
         verbose_message('Inserted loss model, id={0}\n'.format(model_id))
         return model_id
 

@@ -32,7 +32,7 @@ class LossModel():
         self.name = name
         self.description = description
         self.id = None
-        self.contribution_md = None
+        self.contribution = None
         self.loss_maps = []
         self.loss_curve_maps = []
 
@@ -42,11 +42,15 @@ class LossModel():
     @classmethod
     def from_md(cls, md):
         model = LossModel(md.get('name'), md.get('description'))
-        model.contribution_md = md.get('contribution')
+        model.contribution = md.get('contribution')
         loss_maps = md.get('loss_maps')
         if(loss_maps is not None):
             for lm in loss_maps:
                 model.loss_maps.append(LossMap.from_md(lm))
+        loss_curve_maps = md.get('loss_curve_maps')
+        if(loss_curve_maps is not None):
+            for lcm in loss_curve_maps:
+                model.loss_curve_maps.append(LossCurveMap.from_md(lcm))
         return model
 
 
@@ -98,7 +102,8 @@ class LossCurveMap():
     """
     def __init__(self, model_id, occupancy, component, loss_type,
                  frequency, units,
-                 return_period=None, investigation_time=None):
+                 return_period=None, investigation_time=None,
+                 directives=None):
         self.model_id = model_id
         self.occupancy = occupancy
         self.component = component
@@ -107,7 +112,22 @@ class LossCurveMap():
         self.return_period = return_period
         self.investigation_time = investigation_time
         self.units = units
-        self.curves = []
+        self.directives = directives
+        self.values = []
+
+    @classmethod
+    def from_md(cls, md):
+        loss_map = LossCurveMap(
+            None,
+            md.get('occupancy'),
+            md.get('component'),
+            md.get('loss_type'),
+            md.get('frequency'),
+            md.get('units'),
+            md.get('return_period'),
+            md.get('investigation_time'),
+            md)
+        return loss_map
 
 
 class LossCurveMapValues():

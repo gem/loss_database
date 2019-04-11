@@ -25,7 +25,8 @@ Support for importing a loss model into the Challenge Fund loss database
 import json
 import sys
 
-from loss_model import LossModel, LossMap, LossCurveMap
+from loss_model import LossModel
+# , LossMap, LossCurveMap
 from cf_common import Contribution, License
 
 from django.db import connections

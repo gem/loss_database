@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#
 # -*- coding: utf-8 -*-
 # vim: tabstop = 4 shiftwidth = 4 softtabstop = 4
 #
@@ -32,53 +32,60 @@ class LossModel():
         self.name = name
         self.description = description
         self.id = None
+        self.contribution_md = None
+        self.loss_maps = []
+        self.loss_curve_maps = []
 
-
-class Contribution():
     """
-    Meta-Data description a contribution: date, source, etc.
-
-    :param model_id:
-    :param model_source:
-    :param model_date:
-    :param license_id:
-    :param notes:
-    :param version:
-    :param purpose:
+    Create a LossModel from a meta-data dictionary
     """
-    def __init__(self, model_id, model_source, model_date, license_id,
-                 notes=None, version=None, purpose=None):
-        self.model_id = model_id
-        self.model_source = model_source
-        self.model_date = model_date
-        self.license_id = license_id
-        self.notes = notes
-        self.version = version
-        self.purpose = purpose
+    @classmethod
+    def from_md(cls, md):
+        model = LossModel(md.get('name'), md.get('description'))
+        model.contribution_md = md.get('contribution')
+        loss_maps = md.get('loss_maps')
+        if(loss_maps is not None):
+            for lm in loss_maps:
+                model.loss_maps.append(LossMap.from_md(lm))
+        return model
 
 
 class LossMap():
     """
     Map of loss values (but not curves)
     """
-    def __init__(self, model_id, occupancy, loss_type
-                 return_period=None, units, metric):
+    def __init__(self, model_id, occupancy, component, loss_type,
+                 units, metric,
+                 return_period=None, directives=None):
         self.model_id = model_id
         self.occupancy = occupancy
+        self.component = component
         self.loss_type = loss_type
         self.return_period = return_period
         self.units = units
         self.metric = metric
-        id = None
+        self.directives = directives
         self.values = []
+
+    @classmethod
+    def from_md(cls, md):
+        loss_map = LossMap(
+            None,
+            md.get('occupancy'),
+            md.get('component'),
+            md.get('loss_type'),
+            md.get('units'),
+            md.get('metric'),
+            md.get('return_period'),
+            md)
+        return loss_map
 
 
 class LossMapValue():
     """
     Individual loss value for a given location
     """
-    def __init__(self, loss_map_id, asset_ref=None,
-                 geometry, loss):
+    def __init__(self, loss_map_id, geometry, loss, asset_ref=None,):
         self.loss_model_id = loss_map_id
         self.asset_ref = asset_ref
         self.geometry = geometry
@@ -89,9 +96,9 @@ class LossCurveMap():
     """
     Map of loss curves
     """
-    def __init__(self, model_id, occupancy, component, loss_type
-                 frequency, return_period=None,
-                 investigation_time=None, units):
+    def __init__(self, model_id, occupancy, component, loss_type,
+                 frequency, units,
+                 return_period=None, investigation_time=None):
         self.model_id = model_id
         self.occupancy = occupancy
         self.component = component
@@ -100,7 +107,6 @@ class LossCurveMap():
         self.return_period = return_period
         self.investigation_time = investigation_time
         self.units = units
-        id = None
         self.curves = []
 
 
@@ -108,9 +114,9 @@ class LossCurveMapValues():
     """
     Individual loss curve for a given location
     """
-    def __init__(self, loss_curve_map_id, asset_ref=None,
-                 geometry, losses, rates):
-        self.loss_model_id = loss_map_id
+    def __init__(self, loss_curve_map_id,
+                 geometry, losses, rates, asset_ref=None):
+        self.loss_curve_map_id = loss_curve_map_id
         self.asset_ref = asset_ref
         self.geometry = geometry
         self.losses = losses

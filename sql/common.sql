@@ -72,5 +72,9 @@ ODbL,Open Data Commons Open Database License (ODbL),Attribution-ShareAlike for d
 
 COMMIT;
 
+GRANT USAGE ON SCHEMA cf_common TO lossusers;
+GRANT SELECT ON ALL TABLES IN SCHEMA cf_common TO lossusers;
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA cf_common TO losscontrib;
+
 -- Magic Vim comment to use 4 space tabs                                        
 -- vim: set ts=4:sw=4                                                           

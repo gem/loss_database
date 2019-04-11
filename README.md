@@ -4,9 +4,6 @@ Database schema and prototype code for Challenge Fund loss database
 Please note that the contents of this repository should be considered 
 experimental.
 
-Note also that Python code requires an installation of the OpenQuake
-Engine and makes use of the underlying baselib and hazardlib libraries
-
 ## Quick setup
 
 ### Pre-requisites

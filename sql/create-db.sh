@@ -1,5 +1,5 @@
 #!/bin/sh
-DB_NAME=losstest
+DB_NAME=loss
 
 createdb $DB_NAME
 

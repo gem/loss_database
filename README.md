@@ -12,7 +12,7 @@ Ubuntu
 ```bash
 $ sudo apt install python-virtualenv python-dev
 ```
-CentOS/FEdora
+CentOS/Fedora
 ```bash
 $ sudo yum install python-virtualenv python-devel
 ```

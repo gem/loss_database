@@ -1,0 +1,27 @@
+DATABASES = {
+    # default entry required by django but not used
+    'default': {
+    },
+    'lossdb': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'loss',
+        'USER': 'lossviewer',
+        'PASSWORD': '<password here>',
+        'HOST': '<hostname>',
+        'PORT': 5432,
+        'OPTIONS': {
+            'sslmode': 'require',
+        }
+    },
+    'losscontrib': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'loss',
+        'USER': 'losscontrib',
+        'PASSWORD': '<password here>',
+        'HOST': '<hostname>',
+        'PORT': 5432,
+        'OPTIONS': {
+            'sslmode': 'require',
+        }
+    }
+}

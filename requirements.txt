@@ -1,0 +1,4 @@
+# Python requirements for scripts
+# located in the 'python' folder
+django==1.11.15
+psycopg2

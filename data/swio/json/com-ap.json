@@ -1,0 +1,33 @@
+{
+  "name": "SWIO RAFI Comoros All Perils Losses", 
+  "description": "SWIO RAFI Comoros All Perils Losses.  Administrative level 2 AAL map and Return Period curves for 10 - 1000 year return periods.", 
+  "contribution": {                                                             
+    "license_code": "CC-BY-SA-4.0",                                             
+    "model_date": "2016-01-01",                                                 
+    "model_source": "GFDRR SWIO RAFI Report https://www.gfdrr.org/en/publication/southwest-indian-ocean-risk-assessment-and-financing-initiative-summary-report-and-risk", 
+    "purpose": "National and administrative level risk assessment"              
+  },                                                                            
+  "loss_maps": [
+  {
+    "component": "Buildings",
+    "occupancy": "Mixed",
+    "loss_type": "Ground Up",
+    "units": "USD",
+    "metric": "AAL",
+    "_cf_loss_map_value_data_query": 
+      "gid AS asset_ref, geom AS the_geom, aal AS loss FROM temp.swio_com_ap_loss_aal_adm_2"
+  }
+  ],
+  "loss_curve_maps": [
+  {
+    "component": "Buildings",
+    "occupancy": "Mixed",
+    "frequency": "Return Period",
+	"return_period": 1000,
+    "loss_type": "Ground Up",
+    "units": "USD",
+    "_cf_loss_curve_map_value_data_query": 
+      "gid AS asset_ref, geom AS the_geom, ARRAY[rp10,rp25,rp50,rp100,rp250,rp500,rp1000] AS losses, ARRAY[10,25,50,100,250,500,1000] AS rates FROM temp.swio_com_ap_loss_aal_adm_2"
+  }
+  ] 
+}

@@ -89,7 +89,7 @@ DROP TYPE IF EXISTS loss.occupancy_enum;
 CREATE TABLE IF NOT EXISTS loss_model (
 	id					SERIAL PRIMARY KEY,
 	name				VARCHAR NOT NULL,
-	description			TEXT
+	description			TEXT,
 	--
 	-- Optional hazard and process types
 	--

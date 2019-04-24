@@ -1,6 +1,7 @@
 {
   "name": "SWIO RAFI Seychelles Non-Tropical Cyclone Losses", 
   "description": "SWIO RAFI Seychelles Non-Tropical Cyclone Losses.  Administrative level 2 AAL map and Return Period curves for 10 - 1000 year return periods.", 
+  "hazard_type": "MH",
   "contribution": {                                                             
     "license_code": "CC-BY-SA-4.0",                                             
     "model_date": "2016-01-01",                                                 
@@ -23,7 +24,6 @@
     "component": "Buildings",
     "occupancy": "Mixed",
     "frequency": "Return Period",
-	"return_period": 1000,
     "loss_type": "Ground Up",
     "units": "USD",
     "_cf_loss_curve_map_value_data_query": 

@@ -71,11 +71,10 @@ COMMENT ON TYPE loss.frequency_enum IS 'Types of loss frequency';
 -- Enumerated type for loss component
 --
 CREATE TYPE loss.component_enum AS ENUM (
-	-- TODO check should Buildings be Structures or similar to handle 
-	-- non-building assets such as roads, bridges or crops?
 	'Buildings',
+	'Direct Damage to other Asset',
 	'Contents',
-	'Business Interruption'	
+	'Business Interruption'
 );
 COMMENT ON TYPE loss.component_enum IS 'Types of loss component';
 
@@ -91,8 +90,17 @@ CREATE TABLE IF NOT EXISTS loss_model (
 	id					SERIAL PRIMARY KEY,
 	name				VARCHAR NOT NULL,
 	description			TEXT
-	-- TODO add hazard and process type (probably better here than in maps)
-	-- TODO add optional links to other CF DBs
+	--
+	-- Optional hazard and process types
+	--
+	hazard_type			VARCHAR REFERENCES cf_common.hazard_type(code),
+	process_type		VARCHAR REFERENCES cf_common.process_type(code),
+	--
+	-- Optional links to hazard, exposure and vulnerability models
+	--
+	hazard_link			VARCHAR,
+	exposure_link		VARCHAR,
+	vulnerability_link	VARCHAR
 );
 COMMENT ON TABLE loss.loss_model 
 	IS 'Loss model meta-data and optional links to hazard, exposure and vulnerability models';                                               

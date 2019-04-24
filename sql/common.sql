@@ -19,8 +19,8 @@ DROP TYPE IF EXISTS cf_common.hazard_enum;
 -- Valid hazard types
 --
 CREATE TABLE cf_common.hazard_type (
-    code character varying NOT NULL,
-    name character varying NOT NULL
+    code    VARCHAR PRIMARY KEY,
+    name    VARCHAR NOT NULL
 );
 COMMENT ON TABLE cf_common.hazard_type IS 'Valid Hazard types';
 ALTER TABLE cf_common.hazard_type OWNER TO losscontrib;
@@ -45,9 +45,9 @@ MH	Multi-Hazard
 -- Process Types by Hazard type
 --
 CREATE TABLE cf_common.process_type (
-    code character varying NOT NULL,
-    hazard_code character varying NOT NULL,
-    name character varying NOT NULL
+    code        VARCHAR PRIMARY KEY,
+    hazard_code VARCHAR NOT NULL,
+    name        VARCHAR NOT NULL
 );
 ALTER TABLE cf_common.process_type OWNER TO losscontrib;
 

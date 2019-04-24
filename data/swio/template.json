@@ -1,6 +1,7 @@
 {
   "name": "SWIO RAFI @COUNTRY@ @PERIL@ Losses", 
   "description": "SWIO RAFI @COUNTRY@ @PERIL@ Losses.  Administrative level 2 AAL map and Return Period curves for 10 - 1000 year return periods.", 
+  "hazard_type": "@HT@",
   "contribution": {                                                             
     "license_code": "CC-BY-SA-4.0",                                             
     "model_date": "2016-01-01",                                                 

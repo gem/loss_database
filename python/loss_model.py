@@ -42,6 +42,7 @@ class LossModel():
     @classmethod
     def from_md(cls, md):
         model = LossModel(md.get('name'), md.get('description'))
+        model.id = md.get('id')
         model.contribution = md.get('contribution')
         loss_maps = md.get('loss_maps')
         if(loss_maps is not None):
@@ -58,10 +59,9 @@ class LossMap():
     """
     Map of loss values (but not curves)
     """
-    def __init__(self, model_id, occupancy, component, loss_type,
+    def __init__(self, occupancy, component, loss_type,
                  units, metric,
                  return_period=None, directives=None):
-        self.model_id = model_id
         self.occupancy = occupancy
         self.component = component
         self.loss_type = loss_type
@@ -74,7 +74,6 @@ class LossMap():
     @classmethod
     def from_md(cls, md):
         loss_map = LossMap(
-            None,
             md.get('occupancy'),
             md.get('component'),
             md.get('loss_type'),
@@ -89,22 +88,27 @@ class LossMapValue():
     """
     Individual loss value for a given location
     """
-    def __init__(self, loss_map_id, geometry, loss, asset_ref=None,):
-        self.loss_model_id = loss_map_id
+    def __init__(self, geometry, loss, asset_ref=None,):
         self.asset_ref = asset_ref
         self.geometry = geometry
         self.loss = loss
+
+    @classmethod
+    def from_md(cls, md):
+        return LossMapValue(
+            md.get('geometry'),
+            md.get('loss'),
+            md.get('asset_ref'))
 
 
 class LossCurveMap():
     """
     Map of loss curves
     """
-    def __init__(self, model_id, occupancy, component, loss_type,
+    def __init__(self, occupancy, component, loss_type,
                  frequency, units,
                  return_period=None, investigation_time=None,
                  directives=None):
-        self.model_id = model_id
         self.occupancy = occupancy
         self.component = component
         self.loss_type = loss_type
@@ -117,8 +121,7 @@ class LossCurveMap():
 
     @classmethod
     def from_md(cls, md):
-        loss_map = LossCurveMap(
-            None,
+        return LossCurveMap(
             md.get('occupancy'),
             md.get('component'),
             md.get('loss_type'),
@@ -127,17 +130,23 @@ class LossCurveMap():
             md.get('return_period'),
             md.get('investigation_time'),
             md)
-        return loss_map
 
 
-class LossCurveMapValues():
+class LossCurveMapValue():
     """
     Individual loss curve for a given location
     """
-    def __init__(self, loss_curve_map_id,
+    def __init__(self,
                  geometry, losses, rates, asset_ref=None):
-        self.loss_curve_map_id = loss_curve_map_id
         self.asset_ref = asset_ref
         self.geometry = geometry
         self.losses = losses
         self.rates = rates
+
+    @classmethod
+    def from_md(cls, md):
+        return LossCurveMapValue(
+            md.get('geometry'),
+            md.get('losses'),
+            md.get('rates'),
+            md.get('asset_ref'))

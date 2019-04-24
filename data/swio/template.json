@@ -23,7 +23,6 @@
     "component": "Buildings",
     "occupancy": "Mixed",
     "frequency": "Return Period",
-	"return_period": 1000,
     "loss_type": "Ground Up",
     "units": "USD",
     "_cf_loss_curve_map_value_data_query": 

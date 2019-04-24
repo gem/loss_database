@@ -30,12 +30,12 @@ SET search_path = loss, pg_catalog, public;
 -- Schema for Challenge Fund loss database elements
 --
 CREATE SCHEMA IF NOT EXISTS loss;
-ALTER SCHEMA loss OWNER TO losscontrib;                                     
-COMMENT ON SCHEMA loss IS                                                  
-	'Schema for Challenge Fund loss database elements';                  
+ALTER SCHEMA loss OWNER TO losscontrib; 
+COMMENT ON SCHEMA loss IS
+	'Schema for Challenge Fund loss database elements';
 
--- NOTE If you want to use a tablespace, configure it here                           
--- SET default_tablespace = loss_ts;                                          
+-- NOTE If you want to use a tablespace, configure it here
+-- SET default_tablespace = loss_ts; 
 
 --
 -- Enumerated type for loss metrics
@@ -44,7 +44,7 @@ CREATE TYPE loss.metric_enum AS ENUM (
 	'AAL',			-- Average Annual Loss
 	'AALR',			-- AAL Ratio
 	'PML'			-- Probable Maximal Loss aka 'Return Period Loss',
-);                                                                              
+);
 COMMENT ON TYPE loss.metric_enum IS 'Types of loss metric';
 
 --
@@ -54,7 +54,7 @@ CREATE TYPE loss.loss_type_enum AS ENUM (
 	'Ground Up',	-- Ground Up losses considering 
 	'Insured'		-- Insured losses considering insurance policy criteria 
 					-- such as deductibles
-);                                                                              
+);
 COMMENT ON TYPE loss.loss_type_enum IS 'Types of loss';
 
 --
@@ -64,7 +64,7 @@ CREATE TYPE loss.frequency_enum AS ENUM (
 	'Rate of Exceedence',			-- for a given investigation time 
 	'Probability of Exceedence',	-- for a given investigation time
 	'Return Period'					-- in years
-);                                                                              
+);
 COMMENT ON TYPE loss.frequency_enum IS 'Types of loss frequency';
 
 --
@@ -76,7 +76,7 @@ CREATE TYPE loss.component_enum AS ENUM (
 	'Buildings',
 	'Contents',
 	'Business Interruption'	
-);                                                                              
+);
 COMMENT ON TYPE loss.component_enum IS 'Types of loss component';
 
 --
@@ -110,8 +110,7 @@ CREATE TABLE IF NOT EXISTS loss_map (
 	component			component_enum NOT NULL,
 	loss_type			loss_type_enum NOT NULL,
 
-	-- TODO check, should this be DOUBLE PRECISION?  
-	return_period		INTEGER, -- DOUBLE PRECISION? - 
+	return_period		INTEGER, 
 	
 	-- e.g. USD, persons, buildings...
 	units				VARCHAR NOT NULL,
@@ -132,11 +131,11 @@ CREATE INDEX ON loss_map(loss_model_id);
 -- Loss values for the specified loss map
 -- With geospatial location and optional asset reference/id
 --
-CREATE TABLE IF NOT EXISTS loss_map_values (                                           
+CREATE TABLE IF NOT EXISTS loss_map_values (
 	id                  BIGSERIAL PRIMARY KEY,
 	loss_map_id			INTEGER NOT NULL REFERENCES loss_map(id) 
 							ON DELETE CASCADE,
-	asset_ref			VARCHAR,	
+	asset_ref			VARCHAR,
 	the_geom			public.geometry(Geometry,4326) NOT NULL,
 	loss				DOUBLE PRECISION NOT NULL
 );
@@ -161,20 +160,7 @@ CREATE TABLE IF NOT EXISTS loss_curve_map (
 	loss_type			loss_type_enum NOT NULL,
 	frequency			frequency_enum NOT NULL,
 
-	-- TODO check, should this be DOUBLE PRECISION?  
-	return_period		INTEGER,
 	investigation_time	INTEGER,
-
-	CONSTRAINT either_return_period_or_inv_time CHECK (
-		-- If frequency=Return Period, return_period must not be null and 
-		-- investigation_time must be null
-		-- If frequency is not Return Period, then return_period must be null
-		-- and investigation_time must not be null
-		(frequency = 'Return Period'::frequency_enum AND 
-			investigation_time IS NULL AND return_period IS NOT NULL) OR
-		(frequency <> 'Return Period'::frequency_enum AND 
-			investigation_time IS NOT NULL AND return_period IS NULL) 
-	),
 
 	-- e.g. USD, persons, buildings...
 	units				VARCHAR NOT NULL
@@ -185,10 +171,10 @@ COMMENT ON TABLE loss.loss_curve_map
 -- Index for FOREIGN KEY
 CREATE INDEX ON loss_curve_map(loss_model_id);
 
---                                                                              
+--
 -- Loss curve values for the specified loss map
--- With geospatial location and optional asset reference/id                     
---                                                                              
+-- With geospatial location and optional asset reference/id
+--
 CREATE TABLE IF NOT EXISTS loss_curve_map_values (
 	id					BIGSERIAL PRIMARY KEY,
 	loss_curve_map_id	INTEGER NOT NULL REFERENCES loss_curve_map(id)
@@ -200,14 +186,14 @@ CREATE TABLE IF NOT EXISTS loss_curve_map_values (
 	CONSTRAINT loss_curve_array_lengths_equal CHECK (
 		array_length(losses,1) = array_length(rates,1)
 	)
-);                                                                              
-COMMENT ON TABLE loss.loss_curve_map_values                                                  
-    IS 'Loss curve values for the specified loss curve map';                                
-                                                                                
+);
+COMMENT ON TABLE loss.loss_curve_map_values
+    IS 'Loss curve values for the specified loss curve map';
+
 -- Index for FOREIGN KEY                                                        
-CREATE INDEX ON loss_curve_map_values USING btree(loss_curve_map_id);                       
--- Geospatial Index for geometry                                                
-CREATE INDEX ON loss_curve_map_values USING GIST(the_geom);                           
+CREATE INDEX ON loss_curve_map_values USING btree(loss_curve_map_id);
+-- Geospatial Index for geometry
+CREATE INDEX ON loss_curve_map_values USING GIST(the_geom);
 
 --
 -- Contribution metadata
@@ -224,9 +210,9 @@ CREATE TABLE contribution (
 	version				VARCHAR,
 	purpose				TEXT
 );
-COMMENT ON TABLE loss.contribution                                                  
-    IS 'Meta-data for contributed model, license, source etc.';                                
--- Index for FOREIGN KEY                                                        
+COMMENT ON TABLE loss.contribution
+    IS 'Meta-data for contributed model, license, source etc.';
+-- Index for FOREIGN KEY
 CREATE INDEX ON contribution USING btree(loss_model_id);
 
 --

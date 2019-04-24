@@ -48,8 +48,10 @@ def verbose_message(msg):
 
 
 _LOSS_MODEL_QUERY = """
-INSERT INTO loss.loss_model(name, description)
-VALUES (%s, %s)
+INSERT INTO loss.loss_model(
+    name, description, hazard_type, process_type,
+    hazard_link, exposure_link, vulnerability_link)
+VALUES (%s, %s, %s, %s, %s, %s, %s)
 RETURNING id
 """
 
@@ -57,7 +59,12 @@ RETURNING id
 def _import_loss_model(cursor, loss_model):
     cursor.execute(_LOSS_MODEL_QUERY, [
             loss_model.name,
-            loss_model.description
+            loss_model.description,
+            loss_model.hazard_type,
+            loss_model.process_type,
+            loss_model.hazard_link,
+            loss_model.exposure_link,
+            loss_model.vulnerability_link
     ])
     return cursor.fetchone()[0]
 
@@ -160,10 +167,10 @@ def _import_loss_maps(cursor, loss_model_id, loss_maps):
 _LOSS_CURVE_MAP_QUERY = """
 INSERT INTO loss.loss_curve_map (
     loss_model_id, occupancy, component, loss_type,
-    frequency, return_period, investigation_time, units)
+    frequency, investigation_time, units)
 VALUES (
     %s, %s, %s, %s,
-    %s, %s, %s, %s
+    %s, %s, %s
 )
 RETURNING id
 """
@@ -176,7 +183,6 @@ def _import_loss_curve_map(cursor, loss_model_id, loss_curve_map):
         loss_curve_map.component,
         loss_curve_map.loss_type,
         loss_curve_map.frequency,
-        loss_curve_map.return_period,
         loss_curve_map.investigation_time,
         loss_curve_map.units
     ])

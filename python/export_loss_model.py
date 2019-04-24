@@ -68,7 +68,7 @@ def dictfetchone(cursor):
 
 
 _LIST_LOSS_MODELS_QUERY = """
-SELECT * FROM loss.loss_model
+SELECT * FROM loss.loss_model ORDER BY id
 """
 
 

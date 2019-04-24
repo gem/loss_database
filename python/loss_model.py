@@ -28,9 +28,17 @@ class LossModel():
     :param name:
     :param description:
     """
-    def __init__(self, name, description=None):
+    def __init__(self, name, description=None, hazard_type=None,
+                 process_type=None, hazard_link=None,
+                 exposure_link=None,
+                 vulnerability_link=None):
         self.name = name
         self.description = description
+        self.hazard_type = hazard_type
+        self.process_type = process_type
+        self.hazard_link = hazard_link
+        self.exposure_link = exposure_link
+        self.vulnerability_link = vulnerability_link
         self.id = None
         self.contribution = None
         self.loss_maps = []
@@ -41,7 +49,14 @@ class LossModel():
     """
     @classmethod
     def from_md(cls, md):
-        model = LossModel(md.get('name'), md.get('description'))
+        model = LossModel(
+            md.get('name'),
+            md.get('description'),
+            md.get('hazard_type'),
+            md.get('process_type'),
+            md.get('hazard_link'),
+            md.get('exposure_link'),
+            md.get('vulnerability_link'))
         model.id = md.get('id')
         model.contribution = md.get('contribution')
         loss_maps = md.get('loss_maps')
@@ -107,13 +122,12 @@ class LossCurveMap():
     """
     def __init__(self, occupancy, component, loss_type,
                  frequency, units,
-                 return_period=None, investigation_time=None,
+                 investigation_time=None,
                  directives=None):
         self.occupancy = occupancy
         self.component = component
         self.loss_type = loss_type
         self.frequency = frequency
-        self.return_period = return_period
         self.investigation_time = investigation_time
         self.units = units
         self.directives = directives
@@ -127,7 +141,6 @@ class LossCurveMap():
             md.get('loss_type'),
             md.get('frequency'),
             md.get('units'),
-            md.get('return_period'),
             md.get('investigation_time'),
             md)
 

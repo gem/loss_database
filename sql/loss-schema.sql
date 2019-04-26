@@ -249,9 +249,3 @@ COMMIT;
 
 -- Magic Vim comment to use 4 space tabs 
 -- vim: set ts=4:sw=4                                                           
-
--- ALTER TYPE loss.component_enum
--- ADD VALUE 'Direct Damage to other Asset' AFTER 'Buildings';
-
-
-

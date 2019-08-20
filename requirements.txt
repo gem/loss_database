@@ -1,4 +1,4 @@
 # Python requirements for scripts
 # located in the 'python' folder
-django==1.11.21
+django==1.11.23
 psycopg2

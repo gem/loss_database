@@ -72,10 +72,10 @@ def _import_loss_model(cursor, loss_model):
 _CONTRIBUTION_QUERY = """
 INSERT INTO loss.contribution (
     loss_model_id, model_source, model_date,
-    notes, license_id, version, purpose)
+    notes, license_id, version, purpose, project)
 VALUES(
     %s, %s, %s,
-    %s, %s, %s, %s
+    %s, %s, %s, %s, %s
 )
 """
 
@@ -91,7 +91,8 @@ def _import_contribution(cursor, model_id, md):
         contribution.notes,
         contribution.license_id,
         contribution.version,
-        contribution.purpose
+        contribution.purpose,
+        contribution.project
     ])
 
 

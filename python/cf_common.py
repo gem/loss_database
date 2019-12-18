@@ -58,7 +58,8 @@ class Contribution():
     :param purpose:
     """
     def __init__(self, model_id, model_source, model_date, license_id,
-                 notes=None, version=None, purpose=None):
+                 notes=None, version=None, purpose=None, project=None,
+                 contributed_at=None):
         self.model_id = model_id
         self.model_source = model_source
         self.model_date = model_date
@@ -66,6 +67,8 @@ class Contribution():
         self.notes = notes
         self.version = version
         self.purpose = purpose
+        self.project = project
+        self.contributed_at = contributed_at
 
     """
     Create a Contribution from a meta-data dictionary.  Maps license
@@ -86,4 +89,6 @@ class Contribution():
             md.get('license_id'),
             md.get('notes'),
             md.get('version'),
-            md.get('purpose'))
+            md.get('purpose'),
+            md.get('project'),
+            md.get('contributed_at'))

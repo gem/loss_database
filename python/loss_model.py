@@ -96,6 +96,10 @@ class LossMap():
             md.get('metric'),
             md.get('return_period'),
             md)
+        lmvs = md.get('values')
+        if(lmvs is not None):
+            for lmv in lmvs:
+                loss_map.values.append(LossMapValue.from_md(lmv))
         return loss_map
 
 
@@ -135,7 +139,7 @@ class LossCurveMap():
 
     @classmethod
     def from_md(cls, md):
-        return LossCurveMap(
+        lcm = LossCurveMap(
             md.get('occupancy'),
             md.get('component'),
             md.get('loss_type'),
@@ -143,6 +147,11 @@ class LossCurveMap():
             md.get('units'),
             md.get('investigation_time'),
             md)
+        lcmvs = md.get('values')
+        if(lcmvs is not None):
+            for lcmv in lcmvs:
+                lcm.values.append(LossCurveMapValue.from_md(lcmv))
+        return lcm
 
 
 class LossCurveMapValue():

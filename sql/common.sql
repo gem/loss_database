@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS cf_common.license (
 );
 COMMENT ON TABLE cf_common.license IS
 	'List of supported licenses';
-ALTER TABLE cf_common.process_type OWNER TO losscontrib;
+ALTER TABLE cf_common.license OWNER TO losscontrib;
 
 DELETE FROM cf_common.license;
 COPY cf_common.license (code,name,notes,url)

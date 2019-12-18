@@ -1,9 +1,10 @@
 #!/bin/sh
-DB_NAME=loss
 
-createdb $DB_NAME
+. $(readlink -f $(dirname $0))/db_settings.sh
 
-psql -d $DB_NAME << _EOF_
+createdb -U $DB_USER -p $DB_PORT -h $DB_HOST $DB_NAME
+
+psql -U $DB_USER -h $DB_HOST -p $DB_PORT -d $DB_NAME  << _EOF_
 CREATE EXTENSION postgis;
 CREATE ROLE lossusers NOLOGIN NOINHERIT;
 CREATE ROLE lossviewer NOLOGIN INHERIT;

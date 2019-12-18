@@ -110,7 +110,7 @@ def _load_contribution(cursor, model_id):
 
 
 _LOSS_MAP_QUERY = """
-SELECT * FROM loss.loss_map WHERE loss_model_id=%s
+SELECT * FROM loss.loss_map WHERE loss_model_id=%s ORDER BY id
 """
 
 
@@ -130,8 +130,9 @@ def _load_loss_maps(cursor, loss_model_id):
 
 
 _LOSS_MAP_VALUES_QUERY = """
-SELECT loss, asset_ref, ST_AsText(the_geom) AS geometry
+SELECT loss, asset_ref, ST_AsText(ST_Normalize(the_geom)) AS geometry
 FROM loss.loss_map_values WHERE loss_map_id=%s
+ORDER BY id
 """
 
 
@@ -147,7 +148,7 @@ def _load_loss_map_values(cursor, loss_map_id, lm):
 
 
 _LOSS_CURVE_MAP_QUERY = """
-SELECT * FROM loss.loss_curve_map WHERE loss_model_id=%s
+SELECT * FROM loss.loss_curve_map WHERE loss_model_id=%s ORDER BY id
 """
 
 
@@ -169,6 +170,7 @@ def _load_loss_curve_maps(cursor, loss_model_id):
 _LOSS_CURVE_MAP_VALUES_QUERY = """
 SELECT losses, rates, asset_ref, ST_AsText(the_geom) AS geometry
 FROM loss.loss_curve_map_values WHERE loss_curve_map_id=%s
+ORDER BY id
 """
 
 
@@ -215,8 +217,14 @@ def _export_loss_model(model_id):
 
 def dumper(obj):
     try:
+        if isinstance(obj, LossMap) or isinstance(obj, LossCurveMap):
+            # Remove directives before exporting
+            d = obj.__dict__
+            del d['directives']
+            return d
         if isinstance(obj, datetime.date):
-            return dict(year=obj.year, month=obj.month, day=obj.day)
+            # Ensure that dates are returned as strings, not dictionaries
+            return str(obj)
         return obj.as_dict()
     except AttributeError:
         return obj.__dict__

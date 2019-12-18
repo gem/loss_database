@@ -124,17 +124,19 @@ _LOSS_MAP_VALUES_QUERY = """
 INSERT INTO loss.loss_map_values (
     loss_map_id, asset_ref, the_geom, loss)
 VALUES (
-    %s, %s, %s, %s
+    %s, %s, ST_GeomFromText(%s,4326), %s
 )
 """
 
 
 def _import_loss_map_values(cursor, loss_map_id, lm_values):
+    verbose_message("Importing {0} lm values for {1}\n".format(len(lm_values),loss_map_id))
     for lmv in lm_values:
+        verbose_message("Importing lm value {0} {1}\n".format(lmv.asset_ref,lmv.loss))
         cursor.execute(_LOSS_MAP_VALUES_QUERY, [
             loss_map_id,
             lmv.asset_ref,
-            lmv.the_geom,
+            lmv.geometry,
             lmv.loss
         ])
 
@@ -159,6 +161,7 @@ def _import_loss_maps(cursor, loss_model_id, loss_maps):
         if d is not None:
             q = d.get('_cf_loss_map_value_data_query')
             if q is not None:
+                verbose_message("Import LM found query {0}".format(q))
                 _import_loss_map_values_via_query(cursor, lmid, q)
                 return
         _import_loss_map_values(cursor, lmid, lm.values)
@@ -204,10 +207,10 @@ def _import_loss_curve_map_values_via_query(cursor, lmcmid, query):
 
 
 _LOSS_CURVE_MAP_VALUES_QUERY = """
-INSERT INTO loss.loss_map_values (
-    loss_map_id, asset_ref, the_geom, losses, rates)
+INSERT INTO loss.loss_curve_map_values (
+    loss_curve_map_id, asset_ref, the_geom, losses, rates)
 VALUES (
-    %s, %s, %s, %s, %s
+    %s, %s, ST_GeomFromText(%s,4326), %s, %s
 )
 """
 
@@ -217,7 +220,7 @@ def _import_loss_curve_map_values(cursor, loss_map_id, lcm_values):
         cursor.execute(_LOSS_CURVE_MAP_VALUES_QUERY, [
             loss_map_id,
             lcmv.asset_ref,
-            lcmv.the_geom,
+            lcmv.geometry,
             lcmv.losses,
             lcmv.rates
         ])

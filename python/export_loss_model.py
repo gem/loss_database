@@ -218,7 +218,8 @@ def _export_loss_model(model_id):
 def dumper(obj):
     try:
         if isinstance(obj, datetime.date):
-            return dict(year=obj.year, month=obj.month, day=obj.day)
+            # Ensure that dates are returned as strings, not dictionaries
+            return str(obj)
         return obj.as_dict()
     except AttributeError:
         return obj.__dict__

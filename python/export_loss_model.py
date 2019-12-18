@@ -131,7 +131,7 @@ def _load_loss_maps(cursor, loss_model_id):
 
 _LOSS_MAP_VALUES_QUERY = """
 SELECT loss, asset_ref, ST_AsText(ST_Normalize(the_geom)) AS geometry
-FROM loss.loss_map_values WHERE loss_map_id=%s 
+FROM loss.loss_map_values WHERE loss_map_id=%s
 ORDER BY id
 """
 
@@ -217,6 +217,11 @@ def _export_loss_model(model_id):
 
 def dumper(obj):
     try:
+        if isinstance(obj, LossMap) or isinstance(obj, LossCurveMap):
+            # Remove directives before exporting
+            d = obj.__dict__
+            del d['directives']
+            return d
         if isinstance(obj, datetime.date):
             # Ensure that dates are returned as strings, not dictionaries
             return str(obj)

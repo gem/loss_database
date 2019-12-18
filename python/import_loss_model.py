@@ -130,9 +130,9 @@ VALUES (
 
 
 def _import_loss_map_values(cursor, loss_map_id, lm_values):
-    verbose_message("Importing {0} lm values for {1}\n".format(len(lm_values),loss_map_id))
+    verbose_message("Importing {0} values for loss_map {1}\n".format(
+        len(lm_values), loss_map_id))
     for lmv in lm_values:
-        verbose_message("Importing lm value {0} {1}\n".format(lmv.asset_ref,lmv.loss))
         cursor.execute(_LOSS_MAP_VALUES_QUERY, [
             loss_map_id,
             lmv.asset_ref,

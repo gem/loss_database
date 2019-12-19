@@ -33,8 +33,8 @@ from django.db import connections
 from django.conf import settings
 
 import db_settings
-settings.configure(DATABASES=db_settings.DATABASES)
-
+settings.configure(
+    DATABASES=db_settings.DATABASES, TIME_ZONE='UTC', USE_TZ=True)
 
 VERBOSE = True
 

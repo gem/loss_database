@@ -17,26 +17,23 @@
 # along with this program.
 # If not, see <https://www.gnu.org/licenses/agpl.html>.
 #
+import psycopg2
 
-db_confs = {
-    'lossdb': {
-        'NAME': 'loss',
-        'USER': 'lossviewer',
-        'PASSWORD': '<password here>',
-        'HOST': '<hostname>',
-        'PORT': 5432,
-        'OPTIONS': {
-            'sslmode': 'require',
-        }
-    },
-    'losscontrib': {
-        'NAME': 'loss',
-        'USER': 'losscontrib',
-        'PASSWORD': '<password here>',
-        'HOST': '<hostname>',
-        'PORT': 5432,
-        'OPTIONS': {
-            'sslmode': 'require',
-        }
-    }
-}
+
+def db_connections(db_confs):
+    conns = {}
+    for k in db_confs.keys():
+        db_conf = db_confs[k]
+        kwargs={}
+        if 'OPTIONS' in db_conf:
+            if 'sslmode' in db_conf['OPTIONS']:
+                kwargs['sslmode'] = db_conf['OPTIONS']['sslmode']
+
+        conns[k] = psycopg2.connect(user=db_conf['USER'],
+                                    password=db_conf['PASSWORD'],
+                                    host=db_conf['HOST'],
+                                    port=db_conf['PORT'],
+                                    database=db_conf['NAME'],
+                                    **kwargs)
+
+    return conns

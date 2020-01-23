@@ -28,13 +28,8 @@ import sys
 from loss_model import LossModel
 # , LossMap, LossCurveMap
 from cf_common import Contribution, License
-
-from django.db import connections
-from django.conf import settings
-
+from database import db_connections
 import db_settings
-settings.configure(
-    DATABASES=db_settings.DATABASES, TIME_ZONE='UTC', USE_TZ=True)
 
 VERBOSE = True
 
@@ -247,8 +242,10 @@ def import_loss_model(loss_model):
         len(loss_model.loss_maps)))
     verbose_message("Model contains {0} curve maps\n" .format(
         len(loss_model.loss_curve_maps)))
+    connections = db_connections(db_settings.db_confs)
+    connection = connections['loss_contrib']
 
-    with connections['loss_contrib'].cursor() as cursor:
+    with connection.cursor() as cursor:
         License.load_licenses(cursor)
         # TODO investigate commit/rollback
         model_id = _import_loss_model(cursor, loss_model)
@@ -257,6 +254,7 @@ def import_loss_model(loss_model):
         _import_loss_maps(cursor, model_id, loss_model.loss_maps)
         _import_loss_curve_maps(
             cursor, model_id, loss_model.loss_curve_maps)
+        connection.commit()
         verbose_message('Inserted loss model, id={0}\n'.format(model_id))
         return model_id
 

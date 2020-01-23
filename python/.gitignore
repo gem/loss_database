@@ -32,6 +32,10 @@ db_settings.py
 *.sqlite
 
 # JSON files
+=======
+#
+# Ignore all JSON files ONLY in python dir
+#
 *.json
 
 # OS generated files #

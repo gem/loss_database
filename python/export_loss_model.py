@@ -29,14 +29,8 @@ import datetime
 from loss_model import LossModel, LossMap, LossMapValue, \
     LossCurveMap, LossCurveMapValue
 from cf_common import Contribution, License
-
-from django.db import connections
-from django.conf import settings
-
+from database import db_connections
 import db_settings
-settings.configure(
-    DATABASES=db_settings.DATABASES, TIME_ZONE='UTC', USE_TZ=True)
-
 
 VERBOSE = True
 
@@ -188,6 +182,8 @@ def _load_loss_curve_map_values(cursor, loss_map_id, lcm):
 
 def _show_loss_models():
     "Display a list of available loss models and ids on stdout"
+
+    connections = db_connections(db_settings.db_confs)
     with connections['loss_contrib'].cursor() as cursor:
         License.load_licenses(cursor)
         models = _list_loss_models(cursor)
@@ -197,6 +193,9 @@ def _show_loss_models():
 
 def _export_loss_model(model_id):
     "Export the fiven model_id to a json file"
+
+    connections = db_connections(db_settings.db_confs)
+
     verbose_message("Loading model {0}\n".format(
         model_id))
 

@@ -185,7 +185,6 @@ def _show_loss_models():
     "Display a list of available loss models and ids on stdout"
 
     connections = db_connections(db_settings.db_confs)
-    
     with connections['loss_contrib'].cursor() as cursor:
         License.load_licenses(cursor)
         models = _list_loss_models(cursor)

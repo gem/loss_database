@@ -31,6 +31,9 @@ db_settings.py
 *.sql
 *.sqlite
 
+# JSON files
+*.json
+
 # OS generated files #
 ######################
 .DS_Store

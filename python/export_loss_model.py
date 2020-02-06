@@ -28,7 +28,7 @@ import datetime
 
 from loss_model import LossModel, LossMap, LossMapValue, \
     LossCurveMap, LossCurveMapValue
-from cf_common import Contribution, License
+from cf_common import Contribution
 from database import db_connections
 import db_settings
 
@@ -185,7 +185,6 @@ def _show_loss_models():
 
     connections = db_connections(db_settings.db_confs)
     with connections['loss_contrib'].cursor() as cursor:
-        License.load_licenses(cursor)
         models = _list_loss_models(cursor)
         for md in models:
             print('{0}\t{1}'.format(md.get('id'), md.get('name')))
@@ -200,8 +199,7 @@ def _export_loss_model(model_id):
         model_id))
 
     loss_model = None
-    with connections['loss_contrib'].cursor() as cursor:
-        License.load_licenses(cursor)
+    with connections['loss_reader'].cursor() as cursor:
         loss_model = load_loss_model(cursor, model_id)
 
     if loss_model is None:

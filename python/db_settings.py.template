@@ -19,7 +19,7 @@
 #
 
 db_confs = {
-    'lossdb': {
+    'loss_reader': {
         'NAME': 'loss',
         'USER': 'lossviewer',
         'PASSWORD': '<password here>',
@@ -29,7 +29,7 @@ db_confs = {
             'sslmode': 'require',
         }
     },
-    'losscontrib': {
+    'loss_contrib': {
         'NAME': 'loss',
         'USER': 'losscontrib',
         'PASSWORD': '<password here>',

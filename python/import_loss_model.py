@@ -26,8 +26,7 @@ import json
 import sys
 
 from loss_model import LossModel
-# , LossMap, LossCurveMap
-from cf_common import Contribution, License
+from cf_common import Contribution
 from database import db_connections
 import db_settings
 
@@ -67,10 +66,10 @@ def _import_loss_model(cursor, loss_model):
 _CONTRIBUTION_QUERY = """
 INSERT INTO loss.contribution (
     loss_model_id, model_source, model_date,
-    notes, license_id, version, purpose)
+    notes, license_code, version, purpose, project)
 VALUES(
     %s, %s, %s,
-    %s, %s, %s, %s
+    %s, %s, %s, %s, %s
 )
 """
 
@@ -84,9 +83,10 @@ def _import_contribution(cursor, model_id, md):
         contribution.model_source,
         contribution.model_date,
         contribution.notes,
-        contribution.license_id,
+        contribution.license_code,
         contribution.version,
-        contribution.purpose
+        contribution.purpose,
+        contribution.project
     ])
 
 
@@ -245,8 +245,6 @@ def import_loss_model(loss_model):
     connection = connections['loss_contrib']
 
     with connection.cursor() as cursor:
-        License.load_licenses(cursor)
-        # TODO investigate commit/rollback
         model_id = _import_loss_model(cursor, loss_model)
         _import_contribution(
             cursor, model_id, loss_model.contribution)

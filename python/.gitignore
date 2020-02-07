@@ -31,6 +31,8 @@ db_settings.py
 *.sql
 *.sqlite
 
+# JSON files
+=======
 #
 # Ignore all JSON files ONLY in python dir
 #
